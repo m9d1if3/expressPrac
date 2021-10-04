@@ -54,6 +54,19 @@ form>textarea {
    color: black;
 }
 
+.form_login {
+   padding: 10px;
+   display: flex;
+   flex-direction: column;
+   justify-content: space-around;
+   align-items: center;
+}
+
+.form_login>* {
+   color: black;
+   margin-bottom: 5px;
+}
+
 .div_pageDesc {
    white-space: pre-line;
    color: black;

@@ -4,8 +4,8 @@ const table_login = require('../lib/login_table');
 
 
 router.get('/', (req, res) => {
-   const authentication = req.checkLogIn;
-   table_login.login(req, res, authentication.isLogin);
+   const authentication = req.session.isLogin;
+   table_login.login(req, res, authentication);
 });
 
 router.post('/process', (req, res) => {

@@ -9,12 +9,11 @@ const table_author = require('./lib/author_table');
 const compression = require('compression');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
-const checkLogIn = require('./lib/checkLogIn');
+const session = require('express-session');
+const fileStore = require('session-file-store')(session);
 
 const TABLE_NAME_MAIN = 'topic';
 const TABLE_NAME_AUTH = 'author';
-let IS_LOGGEDIN = false;
-let IS_ADMIN = false;
 
 app.use(helmet());
 
@@ -45,9 +44,17 @@ app.use(express.urlencoded({
    limit: '50mb',
    extended: false
 }));
+
 // compression, cookie-parser라는 middle-ware를 사용한다고 알림
 app.use(compression());
 app.use(cookieParser());
+app.use(session({
+   secret: 'session secret',
+   resave: false,
+   saveUninitialized: true,
+   store: new fileStore({logFn: function(){}}),
+}));
+
 /*
    < application-level 커스텀 미들웨어 구현 >
 
@@ -90,13 +97,6 @@ app.use(cookieParser());
 
    * => 단, next('route')는 app.METHOD() or router.METHOD()에 의해 로드된 미들웨어 함수 안에서만 작동한다.
 */
-app.get('*', (req, res, next) => {
-   IS_LOGGEDIN = checkLogIn.isLoggedIn(req, res);
-
-   if (IS_LOGGEDIN) IS_ADMIN = checkLogIn.isAdmin(req, res);
-   req.checkLogIn = { isLogin: IS_LOGGEDIN, isAdmin: IS_ADMIN };
-   next();
-});
 
 app.get('*', async (req, res, next) => {
    try {
@@ -108,9 +108,9 @@ app.get('*', async (req, res, next) => {
    next();
 });
 
-app.use('/login', loginRouter);
-app.use('/page', topicRouter);
 app.use('/', indexRouter);
+app.use('/page', topicRouter);
+app.use('/login', loginRouter);
 
 // Not Found process middle-ware
 app.use(function (req, res, next) {
