@@ -19,7 +19,7 @@ body {
    border: 0;
    padding: 0;
    background-image: url('/images/bg_image_2.jpg');
-   background-position: 0% 20%;
+   background-position: 0% 50%;
    background-size: cover;
    background-repeat: no-repeat;
 }
@@ -47,5 +47,14 @@ form>textarea {
 }
 
 .form_create>* {
+   color: black;
+}
+
+.form_update>* {
+   color: black;
+}
+
+.div_pageDesc {
+   white-space: pre-line;
    color: black;
 }
